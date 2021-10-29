@@ -10,15 +10,27 @@
       fetch(`/api/v1/schools/?search=${query}`)
         .then(response => response.json())
         .then(data => {
-          console.log(data)
-          populateResults(data.map(r => r.name))
+          populateResults(data)
         })
+    }
+
+    const inputValue = (result) => {
+      if (result) { return result.name }
+    }
+
+    const suggestion = (result) => {
+      if (result) {
+        const name = result.name
+        const hint = `${result.town}, ${result.postcode}, URN: ${result.urn}`
+        return `${name}<span class="autocomplete__option-hint">${hint}</span>`
+      }
     }
 
     accessibleAutocomplete({
       element: document.querySelector('#school-autocomplete-container'),
       id: 'school-autocomplete',
-      source: searchSchools
+      source: searchSchools,
+      templates: { inputValue, suggestion }
     })
   </script>
 {% endblock %}
