@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% set title = 'School autocomplete' %}
+{% block pageStyles %}
+  <link href="/public/accessible-autocomplete/accessible-autocomplete.min.css" media="screen" rel="stylesheet">
+{% endblock %}
+{% block pageScripts %}
+  <script src="/public/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+  <script>
+    const searchSchools = (query, populateResults) => {
+      fetch(`/api/v1/schools/?search=${query}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          populateResults(data.map(r => r.name))
+        })
+    }
+
+    accessibleAutocomplete({
+      element: document.querySelector('#school-autocomplete-container'),
+      id: 'school-autocomplete',
+      source: searchSchools
+    })
+  </script>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">{{ title }}</h1>
+
+    <label for="school-autocomplete" class="govuk-label govuk-label--m">Pick a school</label>
+    <div id="school-autocomplete-container"></div>
+  </div>
+</div>
+{% endblock %}
